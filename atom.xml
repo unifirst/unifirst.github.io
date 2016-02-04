@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[unifirst的技术博客]]></title>
+  <link href="http://unifirst.github.io/atom.xml" rel="self"/>
+  <link href="http://unifirst.github.io/"/>
+  <updated>2016-02-04T13:04:49+08:00</updated>
+  <id>http://unifirst.github.io/</id>
+  <author>
+    <name><![CDATA[unifirst]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[First Blog]]></title>
+    <link href="http://unifirst.github.io/blog/2016/02/04/first-blog/"/>
+    <updated>2016-02-04T12:17:12+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/02/04/first-blog</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>
