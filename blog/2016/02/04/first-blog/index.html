@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>First Blog - unifirst的技术博客</title>
+  <title>博客建立之路 - unifirst的技术博客</title>
   <meta name="author" content="unifirst">
 
   
-  <meta name="description" content="
-">
+  <meta name="description" content="blog历程 托管博客 我先后用过新浪博客、CSDN博客、博客大巴还有其它一些不知名的小blog，当然还有QQ空间、校内等。每次想记些东西的时候，总是纠结于要记录在哪。久而久之，貌似处处都有blog，然而又处处不长久。 印象尤为深刻的，是以前选了一个很冷门的blog网站，自己偏安一隅地写着blog &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,7 +68,7 @@
   
   <header>
     
-      <h1 class="entry-title">First Blog</h1>
+      <h1 class="entry-title">博客建立之路</h1>
     
     
       <p class="meta">
@@ -85,7 +84,62 @@
   </header>
 
 
-<div class="entry-content">
+<div class="entry-content"><h2>blog历程</h2>
+
+<h3>托管博客</h3>
+
+<p>我先后用过<a href="http://blog.sina.com.cn/heiflow">新浪博客</a>、<a href="http://blog.csdn.net/unifirst">CSDN博客</a>、<a href="http://zhendexiangxxzhegeblogziyuming.blogbus.com/">博客大巴</a>还有其它一些不知名的小blog，当然还有QQ空间、校内等。每次想记些东西的时候，总是纠结于要记录在哪。久而久之，貌似处处都有blog，然而又处处不长久。</p>
+
+<p>印象尤为深刻的，是以前选了一个很冷门的blog网站，自己偏安一隅地写着blog，结果有一天被通知网站要关闭了，之后export出来，我还用windows自带的加密给文件加了下密，还没来得及处理，后来的一次重装系统，再也无法解密了。</p>
+
+<h3>自建blog</h3>
+
+<p>有追求的人都自己搭建blog，看网上很多wordpress的教程，也搞过。当时穷学生一个，舍不得花钱买空间、买域名，找免费的空间和域名（比如tk），到时也出来过博客首页，到最后都不了了之。</p>
+
+<h3>github</h3>
+
+<p>毕业后进了国企，就再也没想过这档子事。两年后出来，感觉仿佛变了天，git？没用过啊。面试，还要最好有git的项目？瞬间感觉被落下好几个世纪。</p>
+
+<p>好在终于进了个不大不小的互联网公司，开始兢兢业业地向大家学习。也终于逐渐知道了github是怎么回事，而且竟然了解了通过git可以搭建blog，这让我跃跃欲试。</p>
+
+<h2>github中博客的搭建</h2>
+
+<p>各种教程网上遍布，我也就不班门弄斧了。甚至看到了关于大家传播github搭建blog是否会导致github走向sourceforge命运的讨论。作为旁观者我就是看看，我不说话。</p>
+
+<p>首先是唐巧的两篇文章给了我很大启示<a href="http://blog.devtang.com/blog/2012/02/10/setup-blog-based-on-github/">《象写程序一样写博客：搭建基于github的博客》</a>和<a href="http://blog.devtang.com/blog/2014/01/08/why-we-need-write/">《作为码农，我们为什么要写作》</a>给了我很大启示和帮助。我虽然年近30但事业上一事无成，但看过一篇鸡汤文章<a href="http://toutiao.com/a6240890766765506818/">《我说来不及，你就不学了吗</a>》，告诉我任何时候开始都不算晚。</p>
+
+<p>在这春节前的最后一两个工作日，也终于算是稍有空闲。准备上手搭建这个blog。</p>
+
+<h3>github</h3>
+
+<p>git的作用想必大家都了解，很强大的版本管理工具，其依托的github上可以实现项目的管理及分享，是码农们的圣殿。</p>
+
+<p>用github搭建blog，其实是用了其提供出来的个人page或者project的page，本意是用于界面化展示个人（或组织）信息或者项目信息的，由于其灵活的可管理定制能力，被大家钻空式地用在了blog上。</p>
+
+<h3>octopress</h3>
+
+<p>只用github，就完全可以搭建blog了。但所有工作都自己来完成，总是有些许不便，也总有些极客极富兴趣地让一些事情变得简单，于是出现了类似于<a href="http://octopress.org/">octopress</a>的工具。</p>
+
+<p>我搭建blog所有的过程，均效仿自octopress官网中的<a href="http://octopress.org/docs/setup/">Octopress Setup</a>及<a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages</a> 的部分。唐巧<a href="http://blog.devtang.com/blog/2012/02/10/setup-blog-based-on-github/">《象写程序一样写博客：搭建基于github的博客》</a>中似有不全。</p>
+
+<h3>GitCafe</h3>
+
+<p>github搭建的blog在国内访问，速度的确令人拙计，唐巧的另一篇博客<a href="http://blog.devtang.com/blog/2014/06/02/use-gitcafe-to-host-blog/">《将博客从GitHub迁移到GitCafe》</a>提供了一种全新的思路。“我强烈建议各位基于 Github Pages 功能来搭建个人博客的朋友，将博客内容镜像到 GitCafe 上”，让我知道我的博客以后的发展方向，目前想来没什么值得大家关注的内容，期待有足够大访问量让我后续有不断改进的动力。</p>
+
+<h3>Markdown</h3>
+
+<p>估计不得不提的就是这个Markdown。百度百科:“Markdown是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。”</p>
+
+<p>我初次见到Markdown是在发布CSDN的blog时，这篇blog也正是用CSDN的来编写的。
+看网上推荐，windows下最好用的是编辑软件是<a href="http://www.markdownpad.com/download.html">markdownpad2</a>，已下载，还未安装试用。</p>
+
+<h2>小结</h2>
+
+<p>总之，我的github的blog启动了。希望能通过它，让我不断积累，不断进步。</p>
+
+<p>以后，会陆续加Comments（如Disqus）、文章列表、Catagories等功能，若有需要，会加入Google Analytics及迁移GitCafe等。</p>
+
+<p>如今最重要的，是先用起来。</p>
 </div>
 
 
@@ -117,6 +171,8 @@
     <p class="meta">
       
       
+        <a class="basic-alignment right" href="/blog/2016/02/04/prototype-in-spring/" title="Next Post: Spring中原型prototype的准确使用">Spring中原型prototype的准确使用 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -130,7 +186,11 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/02/04/first-blog/">First Blog</a>
+        <a href="/blog/2016/02/04/prototype-in-spring/">Spring中原型prototype的准确使用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/04/first-blog/">博客建立之路</a>
       </li>
     
   </ul>

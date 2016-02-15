@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Spring | unifirst的技术博客]]></title>
+  <link href="http://unifirst.github.io/blog/categories/spring/atom.xml" rel="self"/>
+  <link href="http://unifirst.github.io/"/>
+  <updated>2016-02-04T17:56:04+08:00</updated>
+  <id>http://unifirst.github.io/</id>
+  <author>
+    <name><![CDATA[unifirst]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring中原型prototype的准确使用]]></title>
+    <link href="http://unifirst.github.io/blog/2016/02/04/prototype-in-spring/"/>
+    <updated>2016-02-04T16:55:01+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/02/04/prototype-in-spring</id>
+    <content type="html"><![CDATA[<h2>实际问题</h2>
+
+<p>项目中，报表导出涉及到了在同一个类的两个不同方法中，都有相同的查询数据库的操作，一个方法是用于获取内容，一个是用于获取条数的，大概类似于这样：
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Service</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyReportExporter</span> <span class="kd">extends</span> <span class="n">AbstractReportExporter</span><span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">DataResp</span> <span class="nf">getData</span><span class="o">(</span><span class="n">Param</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">List</span> <span class="n">records</span> <span class="o">=</span> <span class="n">myService</span><span class="o">.</span><span class="na">queryList</span><span class="o">(</span><span class="n">param</span><span class="o">);</span><span class="c1">//查询db</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nf">wrapResp</span><span class="o">(</span><span class="n">records</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nd">@Override</span>
+</span><span class='line'><span class="kd">protected</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="o">(</span><span class="n">Param</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">myService</span><span class="o">.</span><span class="na">queryList</span><span class="o">(</span><span class="n">param</span><span class="o">).</span><span class="na">size</span><span class="o">();</span><span class="c1">//查询db</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure>
+由于是继承的父类统一处理，因此没办法单独优化这个步骤。在父类的统一处理过程中，会多次调用getCount方法，这样每处理一次，就需要多次查询数据库。</p>
+
+<p>这是会想到，可以用私有全局变量将查询结果存起来。</p>
+
+<h2>使用原型</h2>
+
+<p>在Spring中，@Service默认都是单例的。用了私有全局变量，若不想影响下次请求，就需要用到原型模式，即@Scope(&ldquo;prototype&rdquo;)</p>
+
+<p>所谓单例，就是Spring的IOC机制只创建该类的一个实例，每次请求，都会用这同一个实例进行处理，因此若存在全局变量，本次请求的值肯定会影响下一次请求时该变量的值。
+原型模式，指的是每次调用时，会重新创建该类的一个实例，比较类似于我们自己自己new的对象实例。</p>
+
+<p>通过查看@Scope我们可以看到，默认的模式：singleton
+<code>java
+public @interface Scope {
+String value() default ConfigurableBeanFactory.SCOPE_SINGLETON;
+...
+}
+</code>
+通过如下方式，可以将该类设置为原型模式
+<code>java
+@Service
+@Scope("prototype")
+public class MyReportExporterextends AbstractReportExporter{
+    ...
+}
+</code></p>
+
+<h2>prototype陷阱</h2>
+
+<p>在进行以上改动后，运行发现并没有生效，依然是一个实例。这说明只加一个@Scope注解还不够。</p>
+
+<p>在调用改service的controller层，是这样注入的：
+<code>java
+    @Autowired
+    private MyReportExporter myReportExporter;
+</code>
+而controller同样是默认单例的，因此只实例化了一个controller对象，在其中依赖注入的MyReportExporter对象也就只会实例化一次。</p>
+
+<p>在不想改变controller单例模式的情况下，可以如下修改：
+放弃使用@Autowired方式，改用getBean方式：
+<code>java
+private static ApplicationContext applicationContext;
+MyReportExporter myReportExporter = applicationContext.getBean(MyReportExporter.class);
+</code></p>
+
+<p>可以自己写个Spring工厂类，如下：
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.beans.BeansException</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContextAware</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kn">import</span> <span class="nn">com.quhuhu.cesar.common.utils.LogUtils</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringBeanFactory</span> <span class="kd">implements</span> <span class="n">ApplicationContextAware</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kd">private</span> <span class="kd">static</span> <span class="n">ApplicationContext</span> <span class="n">applicationContext</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Override</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">setApplicationContext</span><span class="o">(</span><span class="n">ApplicationContext</span> <span class="n">applicationContext</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">BeansException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">applicationContext</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * 获取某个Bean的对象</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">T</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">T</span> <span class="nf">getBean</span><span class="o">(</span><span class="n">Class</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">T</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">clazz</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">clazz</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">LogUtils</span><span class="o">.</span><span class="na">errorMail</span><span class="o">(</span><span class="s">&quot;Spring getBean:&quot;</span> <span class="o">+</span> <span class="n">clazz</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">然后</span><span class="err">，</span><span class="n">通过如下方式调用</span><span class="err">：</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">java</span>
+</span><span class='line'><span class="n">SpringBeanFactory</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">MyReportExporter</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">doSth</span><span class="o">()</span>
+</span></code></pre></td></tr></table></div></figure>
+修改后，运行OK，达到自己想要的结果。</p>
+
+<h2>小结</h2>
+
+<p>Spring中依赖注入的默认对象为单例形式，@Scope(“prototype”)注解可以将其改变为原型模式。</p>
+
+<p>改变底层（如service层）的对象为原型时，同时改变上层调用层（如controller层）的调用方式，原型模式才会生效。</p>
+]]></content>
+  </entry>
+  
+</feed>
