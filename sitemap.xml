@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://unifirst.github.io/blog/2016/02/29/eclipse-to-idea/</loc>
+<lastmod>2016-02-29T17:34:20+08:00</lastmod>
+</url>
+<url>
 <loc>http://unifirst.github.io/blog/2016/02/16/count-star/</loc>
 <lastmod>2016-02-16T17:39:14+08:00</lastmod>
 </url>
@@ -23,5 +27,11 @@
 </url>
 <url>
 <loc>http://unifirst.github.io/blog/categories/mysql/</loc>
+</url>
+<url>
+<loc>http://unifirst.github.io/blog/categories/intellij/</loc>
+</url>
+<url>
+<loc>http://unifirst.github.io/blog/categories/idea/</loc>
 </url>
 </urlset>

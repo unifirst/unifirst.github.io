@@ -4,7 +4,7 @@
   <title><![CDATA[unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-02-16T19:00:52+08:00</updated>
+  <updated>2016-02-29T22:24:14+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -12,6 +12,86 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[由eclipse转intellij Idea]]></title>
+    <link href="http://unifirst.github.io/blog/2016/02/29/eclipse-to-idea/"/>
+    <updated>2016-02-29T17:34:20+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/02/29/eclipse-to-idea</id>
+    <content type="html"><![CDATA[<h3>设置字符集utf8</h3>
+
+<p>依次打开 File | Settings | Editor | File Encodings，将IDE Encoding、Project encoding 、default encoding for properties, 均选择utf8</p>
+
+<h3>设置unix换行符</h3>
+
+<p>依次打开 File | Settings | Editor | Code Style，将Line separator (for new  files) 选择 Unix and OS X(\n)</p>
+
+<p>同时可以设置行宽：Right margin (columns): 120</p>
+
+<h3>快捷键设置</h3>
+
+<p>关于idea的快捷键，一搜一堆，不多说。</p>
+
+<p>主要的对应关系：（eclipse ——   intellij）</p>
+
+<pre><code>ctrl+shift+R —— ctrl+shift+n
+ctrl+shift+T —— ctrl+n
+alt+← —— ctrl+alt+←
+F3（ctrl+left button） —— ctrl+B（ctrl+left button）
+Ctrl+D —— Ctrl+Y
+Alt+Shift+Up/Down —— Ctrl+D
+Ctrl+Shift+F —— Ctrl+Alt+L
+Ctrl+Shift+O —— Ctrl+Alt+O
+……
+</code></pre>
+
+<p>在File | Settings | Keymap 中，可以选择eclipse、vs等风格的快捷键</p>
+
+<h3>设置主题、字体</h3>
+
+<p>在File | Settings | Appearance &amp; Behavior | Appearance 设置界面窗口的主题、字体大小</p>
+
+<p>在 File | Settings | Editor | Colors &amp; Fonts | Font 设置编辑区的主题、字体大小。需要注意，原主题无法修改，需要save as建立自己的主题，然后才允许修改</p>
+
+<h3>console / terminal</h3>
+
+<p>这是intellij中很棒的功能。alt+ F12即可打开，可以执行系统的命令。如git、mvn、java等。</p>
+
+<h3>git使用</h3>
+
+<p>eclipse中是在右键team中进行git的操作。intellij中，也可右键选择git对文件进行git操作，如revert（类似于eclipse中的overwrite）等。</p>
+
+<p>intellij中，最爽的就是可以直接打开console执行git命令了。当然也可以通过git bash单独打开。在console中，试着多用git的命令吧。</p>
+
+<h3>maven使用</h3>
+
+<p>公司的项目，一般都是在maven安装目录中，单独设置了setting.xml。刚刚open一个公司的项目时，总会一堆编译错误。其实不外乎两步解决：</p>
+
+<ol>
+<li>依次打开 File | Settings | Build, Execution, Deployment | Build Tools | Maven, 将Maven home directory设置为maven的安装目录，以便使用之前已弄好的setting.xml</li>
+<li>选择project或者pom.xml，右键maven中选择Reimport，一般就OK啦</li>
+</ol>
+
+
+<p>其它的maven操作暂未用到，若需要，mvn命令想来也很方便。</p>
+
+<h3>tomcat server</h3>
+
+<p>依次打开Run | Edit configurations, 点击“+”号，在列表中选择Tomcat server -> local, Server标签下起好Name、配好port，Deployment标签下“+”入artifacts就完成了。</p>
+
+<p>上述添加完后，就可以run或者debug了。</p>
+
+<h3>导入Eclipse的代码格式化文件</h3>
+
+<p>插件Eclipse Code Formatter可以完成这个任务。</p>
+
+<p>File | Settings | Plugins中搜索Eclipse Code Formatter，然后install。然后就可以看到File | Settings | Other Settings | Eclipse Code Formatter了，里面选择Use the eclipse code formatter, 然后在Eclipse Java Formatter config file中选择自己的formatter xml文件就完成了。</p>
+
+<p>在文件中，Ctrl+alt+L就可以format代码了。</p>
+
+<p>其实eclipse还有个文件，就是code template，定义comment格式的。这个暂时还未找到导入方案……</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Count(*)，count(1)和count(field)区别]]></title>
