@@ -137,51 +137,12 @@ Ctrl+Shift+O —— Ctrl+Alt+O
 
 <p>在File | Settings | Keymap 中，可以选择eclipse、vs等风格的快捷键</p>
 
-<h3>设置主题、字体</h3>
-
-<p>在File | Settings | Appearance &amp; Behavior | Appearance 设置界面窗口的主题、字体大小</p>
-
-<p>在 File | Settings | Editor | Colors &amp; Fonts | Font 设置编辑区的主题、字体大小。需要注意，原主题无法修改，需要save as建立自己的主题，然后才允许修改</p>
-
-<h3>console / terminal</h3>
-
-<p>这是intellij中很棒的功能。alt+ F12即可打开，可以执行系统的命令。如git、mvn、java等。</p>
-
-<h3>git使用</h3>
-
-<p>eclipse中是在右键team中进行git的操作。intellij中，也可右键选择git对文件进行git操作，如revert（类似于eclipse中的overwrite）等。</p>
-
-<p>intellij中，最爽的就是可以直接打开console执行git命令了。当然也可以通过git bash单独打开。在console中，试着多用git的命令吧。</p>
-
-<h3>maven使用</h3>
-
-<p>公司的项目，一般都是在maven安装目录中，单独设置了setting.xml。刚刚open一个公司的项目时，总会一堆编译错误。其实不外乎两步解决：</p>
-
-<ol>
-<li>依次打开 File | Settings | Build, Execution, Deployment | Build Tools | Maven, 将Maven home directory设置为maven的安装目录，以便使用之前已弄好的setting.xml</li>
-<li>选择project或者pom.xml，右键maven中选择Reimport，一般就OK啦</li>
-</ol>
-
-
-<p>其它的maven操作暂未用到，若需要，mvn命令想来也很方便。</p>
-
-<h3>tomcat server</h3>
-
-<p>依次打开Run | Edit configurations, 点击“+”号，在列表中选择Tomcat server -> local, Server标签下起好Name、配好port，Deployment标签下“+”入artifacts就完成了。</p>
-
-<p>上述添加完后，就可以run或者debug了。</p>
-
-<h3>导入Eclipse的代码格式化文件</h3>
-
-<p>插件Eclipse Code Formatter可以完成这个任务。</p>
-
-<p>File | Settings | Plugins中搜索Eclipse Code Formatter，然后install。然后就可以看到File | Settings | Other Settings | Eclipse Code Formatter了，里面选择Use the eclipse code formatter, 然后在Eclipse Java Formatter config file中选择自己的formatter xml文件就完成了。</p>
-
-<p>在文件中，Ctrl+alt+L就可以format代码了。</p>
-
-<p>其实eclipse还有个文件，就是code template，定义comment格式的。这个暂时还未找到导入方案……</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/02/29/eclipse-to-idea/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -231,31 +192,12 @@ Ctrl+Shift+O —— Ctrl+Alt+O
 
 <p>同样用explain查看其执行计划，count(field)同样会尽量利用索引来提高性能，暂时发现有以下两种情况：</p>
 
-<ol>
-<li>含有该field的索引</li>
-<li>若改field为主键，则同count(*)一样，会选择更窄的索引，此时和使用count(*)无异</li>
-</ol>
-
-
-<p>由此可见，用count(field)来进行统计会有以下问题：</p>
-
-<ol>
-<li>若该field有null记录，意图用来统计所有记录时，结果是错误的</li>
-<li>若该field没有索引或者不是最优索引，则效率会低</li>
-</ol>
-
-
-<h3>count(1)</h3>
-
-<p>还见到count(1)用法。mysql中验证没有发现与count(*)明显区别，暂且认为是一样的。</p>
-
-<h3>小结</h3>
-
-<p>count(*)和count(1)无太大差别，count(field)若使用不当会带来错误或性能问题，不建议使用。</p>
-
-<p>另外，若含有where语句，则会优先where中条件索引，上面讨论的执行计划，应该没多大意义了。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/02/16/count-star/">Read on &rarr;</a>
+    </footer>
   
 
 

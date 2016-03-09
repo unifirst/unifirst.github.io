@@ -4,7 +4,7 @@
   <title><![CDATA[unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-03-09T22:39:01+08:00</updated>
+  <updated>2016-03-09T23:03:19+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -46,6 +46,9 @@ Ctrl+Shift+O —— Ctrl+Alt+O
 </code></pre>
 
 <p>在File | Settings | Keymap 中，可以选择eclipse、vs等风格的快捷键</p>
+
+<!-- more -->
+
 
 <h3>设置主题、字体</h3>
 
@@ -120,6 +123,9 @@ Ctrl+Shift+O —— Ctrl+Alt+O
 <p>count(field)是对field列不为null的行进行统计，因此某一行的该列为null，则不予计数 。</p>
 
 <p>同样用explain查看其执行计划，count(field)同样会尽量利用索引来提高性能，暂时发现有以下两种情况：</p>
+
+<!-- more -->
+
 
 <ol>
 <li>含有该field的索引</li>

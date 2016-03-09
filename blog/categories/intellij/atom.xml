@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Intellij | unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/blog/categories/intellij/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-03-09T22:39:01+08:00</updated>
+  <updated>2016-03-09T23:03:19+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -46,6 +46,9 @@ Ctrl+Shift+O —— Ctrl+Alt+O
 </code></pre>
 
 <p>在File | Settings | Keymap 中，可以选择eclipse、vs等风格的快捷键</p>
+
+<!-- more -->
+
 
 <h3>设置主题、字体</h3>
 
