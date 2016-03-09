@@ -26,6 +26,8 @@ count(field)是对field列不为null的行进行统计，因此某一行的该�
 
 同样用explain查看其执行计划，count(field)同样会尽量利用索引来提高性能，暂时发现有以下两种情况：
 
+<!-- more -->
+
  1. 含有该field的索引
  2. 若改field为主键，则同count(\*)一样，会选择更窄的索引，此时和使用count(\*)无异
 

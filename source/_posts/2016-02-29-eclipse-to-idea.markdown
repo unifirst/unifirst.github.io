@@ -30,6 +30,8 @@ categories: intellij idea
 
 在File | Settings | Keymap 中，可以选择eclipse、vs等风格的快捷键
 
+<!-- more -->
+
 ###设置主题、字体
 在File | Settings | Appearance & Behavior | Appearance 设置界面窗口的主题、字体大小
 
