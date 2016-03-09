@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Spring | unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/blog/categories/spring/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-03-09T23:09:14+08:00</updated>
+  <updated>2016-03-09T23:12:02+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -55,6 +55,9 @@
 由于是继承的父类统一处理，因此没办法单独优化这个步骤。在父类的统一处理过程中，会多次调用getCount方法，这样每处理一次，就需要多次查询数据库。</p>
 
 <p>这是会想到，可以用私有全局变量将查询结果存起来。</p>
+
+<!-- more -->
+
 
 <h2>使用原型</h2>
 
