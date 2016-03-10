@@ -3,7 +3,7 @@ layout: post
 title: "博客建立之路"
 date: 2016-02-04 12:17:12 +0800
 comments: true
-categories: 
+categories: blog
 ---
 ##blog历程
 ### 托管博客

@@ -3,7 +3,7 @@ layout: post
 title: "由eclipse转intellij idea"
 date: 2016-02-29 17:34:20 +0800
 comments: true
-categories: intellij idea
+categories: [intellij idea]
 ---
 ###设置字符集utf8
 依次打开 File | Settings | Editor | File Encodings，将IDE Encoding、Project encoding 、default encoding for properties, 均选择utf8
