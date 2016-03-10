@@ -29,6 +29,8 @@ public class MyReportExporter extends AbstractReportExporter{
 
 这是会想到，可以用私有全局变量将查询结果存起来。
 
+<!-- more -->
+
 ## 使用原型
 
 在Spring中，@Service默认都是单例的。用了私有全局变量，若不想影响下次请求，就需要用到原型模式，即@Scope("prototype")
