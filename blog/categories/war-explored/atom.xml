@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: War Explored | unifirst的技术博客]]></title>
+  <link href="http://unifirst.github.io/blog/categories/war-explored/atom.xml" rel="self"/>
+  <link href="http://unifirst.github.io/"/>
+  <updated>2016-03-10T22:33:20+08:00</updated>
+  <id>http://unifirst.github.io/</id>
+  <author>
+    <name><![CDATA[unifirst]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Intellij Idea 中启动多个tomcat Server失败问题解决]]></title>
+    <link href="http://unifirst.github.io/blog/2016/03/10/war-vs-war-explored/"/>
+    <updated>2016-03-10T21:32:08+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/03/10/war-vs-war-explored</id>
+    <content type="html"><![CDATA[<p>如我在<a href="http://unifirst.github.io/blog/2016/02/29/eclipse-to-idea/">由eclipse转intellij Idea</a>中提到，由于由Eclipse刚投入Intellij的怀抱不久，对一些使用尚不熟悉，尤其这两天在Intellij中配置启动多个Tomcat出现了问题。</p>
+
+<h3>问题描述</h3>
+
+<p>Intellij idea中，为在本地调试两个系统之间的调用，配置两个本地tomcat server，设置不同的端口号，如8081和8082，Deploy中加入两个系统各自的Artifact xxx:war, Application context设置为“/“，即访问地址分别为<a href="http://localhost:8081/">http://localhost:8081/</a> 和 <a href="http://localhost:8082/">http://localhost:8082/</a> 。</p>
+
+<p>问题来了，分别单独启动两个server时都能成功；但是同时启动两个系统时，两个系统都会出现问题。其中较先启动的server报错为：StandardServer.await: Invalid command &lsquo;&rsquo; received，然后会有一个系统报出异常，提示找不到xml或者properties等。</p>
+
+<!-- more -->
+
+
+<h3>寻求解决方法</h3>
+
+<p>报出的找不到xml或properties等异常，肯定是误报，因为单独启动时是没有问题的。</p>
+
+<p>根据StandardServer.await: Invalid command &lsquo;&rsquo; received百度或者google，得到的结果基本是端口的问题。但是我已经配置了不同的端口号，除上述的http port外，我还查看了server.xml中的shut down port、ajp port等等，均不相同。大略可以排除端口号的问题。</p>
+
+<p>请教同事，同事解释Application context不能同为"/&ldquo;，Intellij会将web发布到tomcat目录下的ROOT中，两者必然冲突。提供了两种解决方案：</p>
+
+<ol>
+<li>Application context区别开，如"/weba/&ldquo;和&rdquo;/webb/"</li>
+<li>将tomcat安装目录复制一份，用两套tomcat部署</li>
+</ol>
+
+
+<p>我恍然同时，又觉得Eclipse完全可以实现啊，Intellij这都实现不了是不是有点low了。</p>
+
+<h3>问题解决</h3>
+
+<p>最终的最终，我发现了问题所在。在Deploy中加入的Artifact不应该是war，而应该选择第二种war explored！</p>
+
+<p>搜索了war和war explored的区别。网上大都在讨论两者最大的区别是explored支持热加载，方便本地修改调试。但是针对本文的问题，没有找到直接解释。</p>
+
+<p>自己浅析一下：war理所当然会打为war包，发布时候脱离了你本地项目目录，发布到了Tomcat目录\webapps\ROOT下；explored方式，是将web root指向了你的本地项目。因此war形式会产生冲突，而explored方式不会，且explored方式可以热加载。</p>
+]]></content>
+  </entry>
+  
+</feed>
