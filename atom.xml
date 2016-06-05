@@ -4,7 +4,7 @@
   <title><![CDATA[unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-03-10T22:33:20+08:00</updated>
+  <updated>2016-06-05T12:52:12+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -12,6 +12,67 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Slf4j、log4j、logback关系介绍]]></title>
+    <link href="http://unifirst.github.io/blog/2016/06/05/slf4j-log4j-logback/"/>
+    <updated>2016-06-05T12:42:35+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/06/05/slf4j-log4j-logback</id>
+    <content type="html"><![CDATA[<h2>日志框架</h2>
+
+<p>日志框架中，经常出现的slf4j、log4j、logback、slf4j-log4j、log4j-over-slf4j等等，让人混淆。为此，特意查找整理了一下，盗贴个图先：</p>
+
+<p><img src="http://img.blog.csdn.net/20160605120235454" alt="日志架构图" /></p>
+
+<p>上图中：</p>
+
+<ul>
+<li>接口：将所有日志实现适配到了一起，用统一的接口调用</li>
+<li>实现：目前主流的日志实现</li>
+<li>旧日志到slf4j的适配器：如果使用了slf4j，但是只想用一种实现，想把log4j的日志体系也从logback输出，这个是很有用的</li>
+<li>slf4j到实现的适配器：如果想制定slf4j的具体实现，需要这些包</li>
+</ul>
+
+
+<!-- more -->
+
+
+<h2>slf4j + logback</h2>
+
+<p>slf4j： slf4j是一个日志系统的封装，对外提供统一的API，不提供日志具体实现。</p>
+
+<p>logback：和log4j同为日志的一种具体实现。</p>
+
+<p>dependency：</p>
+
+<ul>
+<li>slf4j-api （slf4j接口）</li>
+<li>logback-classic (logback服务于slf4j的"驱动")</li>
+<li>logback-core (logback日志实现)</li>
+</ul>
+
+
+<p>如果系统有依赖log4j日志体系，想统一对接到logback，则需要依赖：</p>
+
+<ul>
+<li>log4j-over-slf4j</li>
+</ul>
+
+
+<p>同理，如果是slf4j+log4j组合是怎样呢？</p>
+
+<p>dependency：</p>
+
+<ul>
+<li>slf4j-api （slf4j接口）</li>
+<li>slf4j-log4j (log4j 服务于slf4j的"驱动")</li>
+<li>log4j (log4j 日志实现)</li>
+</ul>
+
+
+<p>结合上段中的日志架构图，各层次比较清晰了，是不是很简单。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Intellij Idea 中启动多个tomcat Server失败问题解决]]></title>

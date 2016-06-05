@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: War Explored - unifirst的技术博客</title>
+  <title>Slf4j、log4j、logback关系介绍 - unifirst的技术博客</title>
   <meta name="author" content="unifirst">
 
   
-  <meta name="description" content="Category: war explored">
-  
+  <meta name="description" content="slf4j、log4j、logback关系介绍">
+  <meta name="keywords" content="slf4j, log4j, java log">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://unifirst.github.io/blog/categories/war-explored/">
+  <link rel="canonical" href="http://unifirst.github.io/blog/2016/06/05/slf4j-log4j-logback/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="unifirst的技术博客" type="application/atom+xml">
@@ -85,35 +85,120 @@ var _hmt = _hmt || [];
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: War Explored</h1>
+    
+      <h1 class="entry-title">Slf4j、log4j、logback关系介绍</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-05T12:42:35+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:42 pm</span></time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><h2>日志框架</h2>
 
-  
-  <h2>2016</h2>
+<p>日志框架中，经常出现的slf4j、log4j、logback、slf4j-log4j、log4j-over-slf4j等等，让人混淆。为此，特意查找整理了一下，盗贴个图先：</p>
 
-<article>
-  
-<h1><a href="/blog/2016/03/10/war-vs-war-explored/">Intellij Idea 中启动多个tomcat Server失败问题解决</a></h1>
-<time datetime="2016-03-10T21:32:08+08:00" pubdate><span class='month'>Mar</span> <span class='day'>10</span> <span class='year'>2016</span></time>
+<p><img src="http://img.blog.csdn.net/20160605120235454" alt="日志架构图" /></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/intellij-idea/'>intellij idea</a>, <a class='category' href='/blog/categories/tomcat/'>tomcat</a>, <a class='category' href='/blog/categories/war-explored/'>war explored</a></span>
-</footer>
+<p>上图中：</p>
+
+<ul>
+<li>接口：将所有日志实现适配到了一起，用统一的接口调用</li>
+<li>实现：目前主流的日志实现</li>
+<li>旧日志到slf4j的适配器：如果使用了slf4j，但是只想用一种实现，想把log4j的日志体系也从logback输出，这个是很有用的</li>
+<li>slf4j到实现的适配器：如果想制定slf4j的具体实现，需要这些包</li>
+</ul>
 
 
-</article>
+<!-- more -->
 
+
+<h2>slf4j + logback</h2>
+
+<p>slf4j： slf4j是一个日志系统的封装，对外提供统一的API，不提供日志具体实现。</p>
+
+<p>logback：和log4j同为日志的一种具体实现。</p>
+
+<p>dependency：</p>
+
+<ul>
+<li>slf4j-api （slf4j接口）</li>
+<li>logback-classic (logback服务于slf4j的"驱动")</li>
+<li>logback-core (logback日志实现)</li>
+</ul>
+
+
+<p>如果系统有依赖log4j日志体系，想统一对接到logback，则需要依赖：</p>
+
+<ul>
+<li>log4j-over-slf4j</li>
+</ul>
+
+
+<p>同理，如果是slf4j+log4j组合是怎样呢？</p>
+
+<p>dependency：</p>
+
+<ul>
+<li>slf4j-api （slf4j接口）</li>
+<li>slf4j-log4j (log4j 服务于slf4j的"驱动")</li>
+<li>log4j (log4j 日志实现)</li>
+</ul>
+
+
+<p>结合上段中的日志架构图，各层次比较清晰了，是不是很简单。</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">unifirst</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-06-05T12:42:35+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:42 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javari-zhi/'>java日志</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/03/10/war-vs-war-explored/" title="Previous Post: Intellij idea 中启动多个tomcat server失败问题解决">&laquo; Intellij idea 中启动多个tomcat server失败问题解决</a>
+      
+      
+    </p>
+  </footer>
 </article>
 
 </div>
