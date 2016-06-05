@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java日志 | unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/blog/categories/javari-zhi/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-06-05T12:52:12+08:00</updated>
+  <updated>2016-06-05T15:46:07+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -12,6 +12,82 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Logback配置]]></title>
+    <link href="http://unifirst.github.io/blog/2016/06/05/logback-config/"/>
+    <updated>2016-06-05T15:40:25+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/06/05/logback-config</id>
+    <content type="html"><![CDATA[<h2>Dependencies</h2>
+
+<p>如<a href="http://unifirst.github.io/blog/2016/06/05/slf4j-log4j-logback/">Slf4j、log4j、logback关系介绍</a>中所说，sif4j+logback日志体系，其dependencies：</p>
+
+<ul>
+<li>slf4j-api （slf4j接口）</li>
+<li>logback-classic (logback服务于slf4j的"驱动")</li>
+<li>logback-core (logback日志实现)</li>
+</ul>
+
+
+<h2>logback配置</h2>
+
+<p>logback.xml示例如下：</p>
+
+<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE configuration&gt;
+&lt;configuration&gt;
+    &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender"&gt;
+        &lt;encoder&gt;
+            &lt;pattern&gt;%d %p [%t] [%X{xxx}] - %m%n&lt;/pattern&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+    &lt;logger name="console_logger" additivity="false"&gt;
+        &lt;appender-ref ref="console" /&gt;
+    &lt;/logger&gt;
+    &lt;logger name="com.xxx.xxx" level="INFO" additivity="false"&gt;
+        &lt;appender-ref ref="console" /&gt;
+    &lt;/logger&gt;
+    &lt;root level="info"&gt;
+        &lt;appender-ref ref="console" /&gt;
+        &lt;appender-ref ref="info" /&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<!-- more -->
+
+
+<h3>appender</h3>
+
+<p>appender是否则写日志的组件，定义日志的输出位置、格式等。包括以下几种：</p>
+
+<ul>
+<li>ConsoleAppender：把日志添加到控制台</li>
+<li>FileAppender：把日志添加到文件</li>
+<li>RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件</li>
+<li>SMTPAppender：把日志发邮件</li>
+<li>其它还有SocketAppender、DBAppender、SyslogAppender、SiftingAppender等</li>
+</ul>
+
+
+<h3>logger</h3>
+
+<p>logger用来设置某一个包或者具体的某一个类的日志打印级别、以及指定appender。其有name、level、additivity三个属性</p>
+
+<ul>
+<li>name：name可以为java中的包或类，表示对该包或类采用该种日志打印级别。也可以为自定义的名字，如“console_logger”, 在使用LoggerFactory.getLogger(&ldquo;console_logger&rdquo;)打印log时，即采用该种打印级别，但这种方式打出的日志会以“console_logger”代替具体类名，不便于定位日志位置。</li>
+<li>level：日志级别，INFO、ERROR等，未设置时默认采用上级日志级别</li>
+<li>additivity：是否向上级传递，若向上级传递，可能会导致打印重复日志。注意，若向上级传递，会连同日志级别一起向上级传递。</li>
+</ul>
+
+
+<h3>root</h3>
+
+<p>logger层级的根。只有level属性。按照appender-ref中定义的方式打印。</p>
+
+<p>所有的日志，只要不在各logger范围内，或者由logger向上级root传递，都会按root级别处理。此时若日志级别大于等于root的level，都会按root设置的打印方式输出。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Slf4j、log4j、logback关系介绍]]></title>

@@ -9,9 +9,9 @@
   <meta name="author" content="unifirst">
 
   
-  <meta name="description" content="日志框架 日志框架中，经常出现的slf4j、log4j、logback、slf4j-log4j、log4j-over-slf4j等等，让人混淆。为此，特意查找整理了一下，盗贴个图先： 上图中： 接口：将所有日志实现适配到了一起，用统一的接口调用
-实现：目前主流的日志实现
-旧日志到slf4j的适配器 &hellip;">
+  <meta name="description" content="Dependencies 如Slf4j、log4j、logback关系介绍中所说，sif4j+logback日志体系，其dependencies： slf4j-api （slf4j接口）
+logback-classic (logback服务于slf4j的"驱动")
+logback-core ( &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +88,96 @@ var _hmt = _hmt || [];
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/06/05/logback-config/">Logback配置</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-05T15:40:25+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:40 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Dependencies</h2>
+
+<p>如<a href="http://unifirst.github.io/blog/2016/06/05/slf4j-log4j-logback/">Slf4j、log4j、logback关系介绍</a>中所说，sif4j+logback日志体系，其dependencies：</p>
+
+<ul>
+<li>slf4j-api （slf4j接口）</li>
+<li>logback-classic (logback服务于slf4j的"驱动")</li>
+<li>logback-core (logback日志实现)</li>
+</ul>
+
+
+<h2>logback配置</h2>
+
+<p>logback.xml示例如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'><span class="cp">&lt;!DOCTYPE configuration&gt;</span>
+</span><span class='line'><span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">&quot;console&quot;</span> <span class="na">class=</span><span class="s">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;encoder&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;pattern&gt;</span>%d %p [%t] [%X{xxx}] - %m%n<span class="nt">&lt;/pattern&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/encoder&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/appender&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">&quot;console_logger&quot;</span> <span class="na">additivity=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&quot;console&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/logger&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">&quot;com.xxx.xxx&quot;</span> <span class="na">level=</span><span class="s">&quot;INFO&quot;</span> <span class="na">additivity=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&quot;console&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/logger&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">&quot;info&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&quot;console&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&quot;info&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/root&gt;</span>
+</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/06/05/logback-config/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -425,6 +515,10 @@ Ctrl+Shift+O —— Ctrl+Alt+O
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/06/05/logback-config/">Logback配置</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/06/05/slf4j-log4j-logback/">Slf4j、log4j、logback关系介绍</a>
       </li>
     
@@ -438,10 +532,6 @@ Ctrl+Shift+O —— Ctrl+Alt+O
     
       <li class="post">
         <a href="/blog/2016/02/16/count-star/">Count(*)，count(1)和count(field)区别</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/04/prototype-in-spring/">Spring中原型prototype的准确使用</a>
       </li>
     
   </ul>
