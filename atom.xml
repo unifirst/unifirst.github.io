@@ -4,7 +4,7 @@
   <title><![CDATA[unifirst的技术博客]]></title>
   <link href="http://unifirst.github.io/atom.xml" rel="self"/>
   <link href="http://unifirst.github.io/"/>
-  <updated>2016-06-05T15:46:07+08:00</updated>
+  <updated>2016-06-25T17:10:45+08:00</updated>
   <id>http://unifirst.github.io/</id>
   <author>
     <name><![CDATA[unifirst]]></name>
@@ -12,6 +12,266 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java序列化]]></title>
+    <link href="http://unifirst.github.io/blog/2016/06/25/java-serializable/"/>
+    <updated>2016-06-25T17:04:07+08:00</updated>
+    <id>http://unifirst.github.io/blog/2016/06/25/java-serializable</id>
+    <content type="html"><![CDATA[<h2>问题</h2>
+
+<p>最近在dubbo接口扩展上遇到了问题。dubbo的参数及返回对象，肯定是要可序列化的，即实现Serializable接口。需求是需要在接口参数中，加入一个字段，但是担心对原来的consumer产生影响，因此对java序列化进行了一下梳理测试。</p>
+
+<p>顺便说下关于dubbo接口扩展碰到的这个问题，有几点收获：</p>
+
+<ul>
+<li>接口的传参，尽量用对象代替多个简单类型的参数，后者不便于加参数</li>
+<li>返回数据，同样尽量用对象代替简单类型</li>
+<li>更好的参数或返回数据扩展方案，应该是采用继承原有参数或返回类型的方式</li>
+</ul>
+
+
+<h2>序列化</h2>
+
+<p>java序列化，就是将java对象序列化为字节流，可以进行传递或者保存，在使用方对结果进行反序列化，从而获取到原来对象的属性值。</p>
+
+<p>在需要将内存中对象保存到文件，或者直接传输对象时，会用到序列化。dubbo就是在provider和consumer之间传递对象数据。</p>
+
+<!-- more -->
+
+
+<h2>类定义改变</h2>
+
+<p>回到最初的问题，其根本是java类定义在发送方发生改变后，接收方能否正确反序列化数据。</p>
+
+<p>单元测试代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Person</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">NewPerson</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">ChildPerson</span> <span class="kd">extends</span> <span class="n">Person</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSerialize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Person</span> <span class="n">parent</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Person</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">parent</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;Parent&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">String</span> <span class="n">parentSerFile</span> <span class="o">=</span> <span class="s">&quot;parent.ser&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">childSerFile</span> <span class="o">=</span> <span class="s">&quot;child.ser&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 序列化parent到parentSerFile</span>
+</span><span class='line'>    <span class="n">serialize</span><span class="o">(</span><span class="n">parent</span><span class="o">,</span> <span class="n">parentSerFile</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">unSerialize</span><span class="o">(</span><span class="n">parentSerFile</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span> <span class="c1">// OK</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//        NewPerson newPerson = unSerialize(parentSerFile); // java.lang.ClassCastException</span>
+</span><span class='line'><span class="c1">//        System.out.println(newPerson.getName());</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 序列化child到childSerFile</span>
+</span><span class='line'>    <span class="n">ChildPerson</span> <span class="n">child</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ChildPerson</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">child</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;Child&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">child</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">serialize</span><span class="o">(</span><span class="n">child</span><span class="o">,</span> <span class="n">childSerFile</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">person</span> <span class="o">=</span> <span class="n">unSerialize</span><span class="o">(</span><span class="n">childSerFile</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span> <span class="c1">// OK</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(((</span><span class="n">ChildPerson</span><span class="o">)</span><span class="n">person</span><span class="o">).</span><span class="na">getAge</span><span class="o">());</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * 序列化对象，保存到文件</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">private</span> <span class="kt">void</span> <span class="nf">serialize</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="n">String</span> <span class="n">fileName</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">FileOutputStream</span> <span class="n">fs</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">FileOutputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">ObjectOutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectOutputStream</span><span class="o">(</span><span class="n">fs</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">os</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * 反序列化对象</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">private</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="nf">unSerialize</span><span class="o">(</span><span class="n">String</span> <span class="n">fileName</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">ObjectInputStream</span> <span class="n">inputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectInputStream</span><span class="o">(</span><span class="k">new</span> <span class="nf">FileInputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">T</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">(</span><span class="n">T</span><span class="o">)</span> <span class="n">inputStream</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">inputStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">obj</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>类路径及类名必须一致</h3>
+
+<p>发送方类com.test1.Class1，接收方是com.test1.Class2或者com.test2.Class1，都不能正确反序列化，报java.lang.ClassCastException异常，如上述代码中注掉的newPerson部分。</p>
+
+<h3>类定义发生改变</h3>
+
+<p>若类定义发生改变，即发送方和接收方，虽然类路径和类名一致，但是发送方和接收方的类版本等不一致，此时亦会报错。</p>
+
+<p>如上述代码，在序列化生成parent.ser文件后，将Person类添加字段sex，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Person</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">sex</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后进行反序列化，会抛出异常java.io.InvalidClassException。提示：local class incompatible: stream classdesc serialVersionUID = 4485681234731380735, local class serialVersionUID = 5015652288950510004</p>
+
+<p>这就是serialVersionUID的作用了。在Person的类定义中，加入以下代码就OK了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">4485681234731380735L</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因此，在定义可序列化对象的时候，强烈建议显式定义serialVersionUID，防止类由于版本等的问题，无法匹配从而无法反序列化问题。</p>
+
+<p>在Eclipse中，是会自动提示生成随机serialVersionUID的，在Intellij idea中同样可以，需要开启：File | Settings | Editor | Inspections 中 Java | Serialization issues | Serializable class without &lsquo;serialVersionUID&rsquo; , 开启后，用alt+enter就可以显式生成serialVersionUID了。</p>
+
+<h3>更好的扩展方式</h3>
+
+<p>更好的扩展方式，应该是定义可序列化对象类的子类，将子类对象序列化后，仍然可以反序列化为原父类对象，从而对原来的序列化数据接收方无影响。</p>
+
+<p>如上述测试代码中的将ChildPerson类的对象序列化后的文件，反序列化为Person类对象。</p>
+
+<p>在一个已成熟稳定的系统中，扩展的时候，应尽量采用这种方式；但由于我们的系统刚刚搭建完成，因此我直接显式声明了serialVersionUID</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Logback配置]]></title>

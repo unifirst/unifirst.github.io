@@ -9,9 +9,7 @@
   <meta name="author" content="unifirst">
 
   
-  <meta name="description" content="Dependencies 如Slf4j、log4j、logback关系介绍中所说，sif4j+logback日志体系，其dependencies： slf4j-api （slf4j接口）
-logback-classic (logback服务于slf4j的"驱动")
-logback-core ( &hellip;">
+  <meta name="description" content="问题 最近在dubbo接口扩展上遇到了问题。dubbo的参数及返回对象，肯定是要可序列化的，即实现Serializable接口。需求是需要在接口参数中，加入一个字段，但是担心对原来的consumer产生影响，因此对java序列化进行了一下梳理测试。 顺便说下关于dubbo接口扩展碰到的这个问题， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +86,57 @@ var _hmt = _hmt || [];
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/06/25/java-serializable/">Java序列化</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-25T17:04:07+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:04 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>问题</h2>
+
+<p>最近在dubbo接口扩展上遇到了问题。dubbo的参数及返回对象，肯定是要可序列化的，即实现Serializable接口。需求是需要在接口参数中，加入一个字段，但是担心对原来的consumer产生影响，因此对java序列化进行了一下梳理测试。</p>
+
+<p>顺便说下关于dubbo接口扩展碰到的这个问题，有几点收获：</p>
+
+<ul>
+<li>接口的传参，尽量用对象代替多个简单类型的参数，后者不便于加参数</li>
+<li>返回数据，同样尽量用对象代替简单类型</li>
+<li>更好的参数或返回数据扩展方案，应该是采用继承原有参数或返回类型的方式</li>
+</ul>
+
+
+<h2>序列化</h2>
+
+<p>java序列化，就是将java对象序列化为字节流，可以进行传递或者保存，在使用方对结果进行反序列化，从而获取到原来对象的属性值。</p>
+
+<p>在需要将内存中对象保存到文件，或者直接传输对象时，会用到序列化。dubbo就是在provider和consumer之间传递对象数据。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/06/25/java-serializable/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -515,6 +564,10 @@ Ctrl+Shift+O —— Ctrl+Alt+O
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/06/25/java-serializable/">Java序列化</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/06/05/logback-config/">Logback配置</a>
       </li>
     
@@ -528,10 +581,6 @@ Ctrl+Shift+O —— Ctrl+Alt+O
     
       <li class="post">
         <a href="/blog/2016/02/29/eclipse-to-idea/">由eclipse转intellij Idea</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/02/16/count-star/">Count(*)，count(1)和count(field)区别</a>
       </li>
     
   </ul>
